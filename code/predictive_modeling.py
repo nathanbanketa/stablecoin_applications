@@ -1,9 +1,3 @@
-"""
-PREDICTIVE MODELING FOR STABLECOIN ADOPTION
-Machine Learning Approach (Decision Trees, Random Forests)
-For: CSCI4911 Stablecoin Research Project
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,18 +9,6 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import warnings
 warnings.filterwarnings('ignore')
 
-print("="*80)
-print("PREDICTIVE MODELING: STABLECOIN ADOPTION")
-print("Machine Learning Approach")
-print("="*80)
-print()
-
-# ============================================================================
-# STEP 1: LOAD AND PREPARE DATA
-# ============================================================================
-
-print("STEP 1: Loading and preparing data...")
-print("-"*80)
 
 df = pd.read_csv("merged_dataset_for_regression.csv")
 
@@ -41,12 +23,7 @@ df_clean = df.dropna(subset=['Stablecoin_Share_Pct'])
 print(f"After removing missing DV: {df_clean.shape[0]} observations")
 print()
 
-# ============================================================================
-# STEP 2: SELECT FEATURES AND TARGET
-# ============================================================================
 
-print("STEP 2: Selecting features for modeling...")
-print("-"*80)
 
 # Target variable (what we're predicting)
 target = 'Stablecoin_Share_Pct'
@@ -66,14 +43,6 @@ print(f"Feature variables:")
 for i, col in enumerate(feature_cols, 1):
     print(f"  {i}. {col}")
 print()
-
-# ============================================================================
-# STEP 3: PREPARE TRAIN/TEST SPLIT
-# ============================================================================
-
-print("STEP 3: Splitting data into train and test sets...")
-print("-"*80)
-
 X = df_model[feature_cols]
 y = df_model[target]
 
@@ -95,12 +64,6 @@ print(f"Training set: {len(X_train)} observations")
 print(f"Test set: {len(X_test)} observations")
 print()
 
-# ============================================================================
-# STEP 4: DESCRIPTIVE STATISTICS
-# ============================================================================
-
-print("STEP 4: Feature statistics...")
-print("-"*80)
 
 print("\nFeature Summary Statistics:")
 print(X_train.describe().to_string())
@@ -113,14 +76,6 @@ print(f"  Min: {y_train.min():.2f}%")
 print(f"  Max: {y_train.max():.2f}%")
 print()
 
-# ============================================================================
-# STEP 5: DECISION TREE REGRESSOR
-# ============================================================================
-
-print("="*80)
-print("STEP 5: Training Decision Tree Model...")
-print("="*80)
-print()
 
 # Decision tree is good for small datasets and interpretability
 dt_model = DecisionTreeRegressor(max_depth=2, random_state=42, min_samples_leaf=1)
@@ -170,9 +125,6 @@ plt.savefig('decision_tree.png', dpi=300)
 print("✓ Saved: decision_tree.png")
 print()
 
-# ============================================================================
-# STEP 6: RANDOM FOREST REGRESSOR
-# ============================================================================
 
 print("="*80)
 print("STEP 6: Training Random Forest Model...")
@@ -216,9 +168,6 @@ print("Feature Importance (Random Forest):")
 print(rf_importance.to_string(index=False))
 print()
 
-# ============================================================================
-# STEP 7: MODEL COMPARISON
-# ============================================================================
 
 print("="*80)
 print("STEP 7: Model Comparison...")
@@ -241,14 +190,7 @@ comparison_df.to_csv('model_comparison.csv', index=False)
 print("✓ Saved: model_comparison.csv")
 print()
 
-# ============================================================================
-# STEP 8: PREDICTION ON TEST DATA
-# ============================================================================
 
-print("="*80)
-print("STEP 8: Predictions on test data...")
-print("="*80)
-print()
 
 predictions_df = pd.DataFrame({
     'Actual': y_test.values,
@@ -266,12 +208,7 @@ predictions_df.to_csv('predictions.csv', index=False)
 print("✓ Saved: predictions.csv")
 print()
 
-# ============================================================================
-# STEP 9: VISUALIZATIONS
-# ============================================================================
 
-print("STEP 9: Creating visualizations...")
-print("-"*80)
 
 # Feature importance comparison
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -320,74 +257,3 @@ axes[1].grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig('actual_vs_predicted.png', dpi=300)
 print("✓ Saved: actual_vs_predicted.png")
-
-print()
-
-# ============================================================================
-# STEP 10: INTERPRETATION GUIDE
-# ============================================================================
-
-print("="*80)
-print("STEP 10: How to interpret results...")
-print("="*80)
-print()
-
-print("WHAT THE METRICS MEAN:")
-print("-"*80)
-print()
-print("R² Score (Coefficient of Determination):")
-print("  - Range: 0 to 1 (higher is better)")
-print("  - 1.0 = Perfect prediction")
-print("  - 0.5 = Model explains 50% of variation")
-print("  - 0.0 = Model explains 0% of variation")
-print(f"  - Your best model: R² = {max(dt_test_r2, rf_test_r2):.4f}")
-print()
-
-print("RMSE (Root Mean Square Error):")
-print("  - Measures typical prediction error in same units as target")
-print("  - Lower is better")
-print(f"  - Your best model: RMSE = {min(dt_test_rmse, rf_test_rmse):.2f} percentage points")
-print(f"  - Interpretation: On average, predictions off by ±{min(dt_test_rmse, rf_test_rmse):.1f}%")
-print()
-
-print("MAE (Mean Absolute Error):")
-print("  - Average magnitude of errors")
-print("  - Lower is better")
-print(f"  - Your best model: MAE = {min(dt_test_mae, rf_test_mae):.2f} percentage points")
-print()
-
-print("FEATURE IMPORTANCE:")
-print("-"*80)
-print(f"\nTop feature (Decision Tree): {dt_importance.iloc[0]['Feature']}")
-print(f"  → This variable has strongest effect on stablecoin adoption")
-print()
-print(f"Top feature (Random Forest): {rf_importance.iloc[0]['Feature']}")
-print(f"  → This variable has strongest effect on stablecoin adoption")
-print()
-
-print("="*80)
-print("FOR YOUR RESEARCH PAPER:")
-print("="*80)
-print()
-print("Write something like:")
-print()
-print(f'"We trained two machine learning models (Decision Tree and Random Forest)')
-print(f'on {len(X_train)} observations to predict stablecoin adoption.')
-print(f'The {["Decision Tree", "Random Forest"][rf_test_r2 > dt_test_r2]} achieved')
-print(f'R² = {max(dt_test_r2, rf_test_r2):.3f} on test data, explaining')
-print(f'{max(dt_test_r2, rf_test_r2)*100:.1f}% of adoption variation.')
-print(f'Feature importance analysis shows {max(dt_importance.iloc[0]["Feature"], rf_importance.iloc[0]["Feature"])}')
-print(f'as the strongest predictor, suggesting [interpretation]."')
-print()
-
-print("="*80)
-print("PREDICTIVE MODELING COMPLETE")
-print("="*80)
-print()
-print("Output files:")
-print("  ✓ decision_tree.png (tree visualization)")
-print("  ✓ feature_importance.png (which variables matter most)")
-print("  ✓ actual_vs_predicted.png (model accuracy visualization)")
-print("  ✓ model_comparison.csv (performance metrics)")
-print("  ✓ predictions.csv (test set predictions)")
-print()

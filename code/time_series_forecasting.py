@@ -1,9 +1,3 @@
-"""
-TIME SERIES FORECASTING FOR STABLECOIN ADOPTION
-ARIMA Modeling and Forecasting
-For: CSCI4911 Stablecoin Research Project
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,17 +8,7 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 import warnings
 warnings.filterwarnings('ignore')
 
-print("="*80)
-print("TIME SERIES FORECASTING: STABLECOIN ADOPTION")
-print("="*80)
-print()
 
-# ============================================================================
-# STEP 1: LOAD AND PREPARE DATA
-# ============================================================================
-
-print("STEP 1: Loading and preparing data...")
-print("-"*80)
 
 # Load your merged dataset
 df = pd.read_csv("merged_dataset_for_regression.csv")
@@ -34,12 +18,7 @@ print("\nData:")
 print(df.to_string())
 print()
 
-# ============================================================================
-# STEP 2: PREPARE TIME SERIES BY COUNTRY
-# ============================================================================
 
-print("STEP 2: Preparing time series by country...")
-print("-"*80)
 
 countries = df['Country'].unique()
 print(f"\nCountries available: {sorted(countries)}")
@@ -62,21 +41,6 @@ for country in sorted(countries):
     print(f"  Observations: {len(ts)}")
     print()
 
-# ============================================================================
-# STEP 3: STATIONARITY TESTING (ADF Test - for datasets large enough)
-# ============================================================================
-
-print("STEP 3: Testing for stationarity (Augmented Dickey-Fuller test)...")
-print("-"*80)
-print()
-print("What is stationarity?")
-print("  - Stationary series has constant mean, variance, autocorrelation")
-print("  - ARIMA works best on stationary data")
-print("  - ADF test: if p-value < 0.05, series is stationary")
-print()
-print("NOTE: For small datasets (< 4 observations), ADF test cannot run.")
-print("      For these countries, we use d=1 (first differencing) by default.")
-print()
 
 adf_results = {}
 
@@ -108,22 +72,6 @@ for country, ts in time_series_data.items():
         adf_results[country] = None
     
     print()
-
-# ============================================================================
-# STEP 4: ACF AND PACF PLOTS
-# ============================================================================
-
-print("STEP 4: Creating ACF and PACF plots...")
-print("-"*80)
-print()
-print("What are ACF and PACF?")
-print("  - ACF (Autocorrelation): correlation with lagged values")
-print("  - PACF (Partial Autocorrelation): correlation after removing lags")
-print("  - Use to determine AR(p) and MA(q) parameters")
-print()
-print("NOTE: With small datasets (3-4 observations), ACF/PACF plots")
-print("      have very few lags. This is normal and expected.")
-print()
 
 # Only create plots if we have data to plot
 countries_with_data = [c for c in time_series_data.keys() if len(time_series_data[c]) >= 2]
@@ -171,21 +119,6 @@ else:
 
 print()
 
-# ============================================================================
-# STEP 5: FIT ARIMA MODELS
-# ============================================================================
-
-print("STEP 5: Fitting ARIMA models...")
-print("-"*80)
-print()
-print("ARIMA(p,d,q) Parameters:")
-print("  p = AR order (autoregressive lags)")
-print("  d = differencing degree (0=stationary, 1=first difference)")
-print("  q = MA order (moving average lags)")
-print()
-print("For small datasets (3-4 observations):")
-print("  Try simple models: ARIMA(1,0,1), ARIMA(1,1,1), ARIMA(0,1,1)")
-print()
 
 arima_models = {}
 arima_results = {}
@@ -221,13 +154,6 @@ for country, ts in time_series_data.items():
                 print(f"  ✗ Could not fit ARIMA for {country}")
                 print()
 
-# ============================================================================
-# STEP 6: MODEL DIAGNOSTICS
-# ============================================================================
-
-print("STEP 6: Model diagnostics...")
-print("-"*80)
-print()
 
 for country, fitted in arima_results.items():
     print(f"{country}:")
@@ -251,15 +177,6 @@ for country, fitted in arima_results.items():
     
     print()
 
-# ============================================================================
-# STEP 7: FORECAST FUTURE ADOPTION
-# ============================================================================
-
-print("STEP 7: Forecasting future stablecoin adoption...")
-print("-"*80)
-print()
-print("Forecast period: 2025-2027 (3 years ahead)")
-print()
 
 forecast_years = [2025, 2026, 2027]
 forecast_results = {}
@@ -282,12 +199,7 @@ for country, fitted in arima_results.items():
     forecast_results[country] = forecast_df
     print()
 
-# ============================================================================
-# STEP 8: VISUALIZE HISTORICAL + FORECAST
-# ============================================================================
 
-print("STEP 8: Visualizing historical data and forecasts...")
-print("-"*80)
 
 fig, axes = plt.subplots(len(time_series_data), 1, figsize=(12, 4*len(time_series_data)))
 
@@ -325,14 +237,7 @@ for idx, (country, ts) in enumerate(sorted(time_series_data.items())):
 plt.tight_layout()
 plt.savefig('time_series_forecasts.png', dpi=300)
 print("✓ Saved: time_series_forecasts.png")
-print()
 
-# ============================================================================
-# STEP 9: SUMMARY TABLE
-# ============================================================================
-
-print("STEP 9: Creating summary table...")
-print("-"*80)
 
 summary_data = []
 
@@ -378,76 +283,3 @@ print()
 summary_df.to_csv('forecast_summary.csv', index=False)
 print("✓ Saved: forecast_summary.csv")
 print()
-
-# ============================================================================
-# STEP 10: INTERPRETATION GUIDE
-# ============================================================================
-
-print("="*80)
-print("STEP 10: How to interpret your results")
-print("="*80)
-print()
-
-print("FOR EACH COUNTRY:")
-print("-"*80)
-print()
-print("Nigeria (if forecast exists):")
-print("  Current (2024): 43.2%")
-print("  Forecast (2027): [model-derived value]")
-print("  Interpretation:")
-print("    - If 50%+: Stablecoin adoption will continue growing")
-print("    - If stable around 43%: Adoption plateau at current level")
-print("    - Confidence interval shows uncertainty (wider = more uncertain)")
-print()
-
-print("Ethiopia (if forecast exists):")
-print("  Current (2023): 43.0%")
-print("  Forecast (2027): [model-derived value]")
-print("  Note: Rapid 180% growth in 2022 suggests strong momentum")
-print()
-
-print("Philippines (if forecast exists):")
-print("  Current (2024): 29.0%")
-print("  Forecast (2027): [model-derived value]")
-print("  Note: Lowest adoption despite high infrastructure")
-print("  → Suggests non-infrastructure barriers")
-print()
-
-print("="*80)
-print("NEXT STEPS FOR YOUR RESEARCH")
-print("="*80)
-print()
-
-print("1. INTERPRET FORECASTS")
-print("   - What do the trajectories suggest about adoption momentum?")
-print("   - Why Nigeria plateau? Why Ethiopia/Nigeria same?")
-print("   - Does Philippines catch up by 2027?")
-print()
-
-print("2. USE FOR INTERVIEWS (Weeks 5-6)")
-print("   - 'Our model forecasts 50% adoption by 2027 in Nigeria'")
-print("   - 'Why will/won't this happen? What barriers remain?'")
-print("   - 'Which forecast scenario is most realistic?'")
-print()
-
-print("3. VALIDATE WITH DESIGN (Weeks 7-10)")
-print("   - 'If we address infrastructure X, could adoption jump to 60%?'")
-print("   - 'Could offline-first features accelerate adoption?'")
-print()
-
-print("4. USE IN PLAYBOOK (Weeks 11-12)")
-print("   - 'Our forecasts show stablecoins plateauing at 43% in Nigeria'")
-print("   - 'Design playbook focuses on barriers to reach 70%+ adoption'")
-print()
-
-print("="*80)
-print("TIME SERIES FORECASTING COMPLETE")
-print("="*80)
-print()
-print("Output files created:")
-print("  ✓ acf_pacf_plots.png (stationarity analysis)")
-print("  ✓ diagnostics_[Country].png (model fit quality)")
-print("  ✓ time_series_forecasts.png (main visualization)")
-print("  ✓ forecast_summary.csv (results table)")
-print()
-
