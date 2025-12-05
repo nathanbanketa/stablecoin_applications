@@ -1,5 +1,0 @@
-Model,Dataset,R² Score,RMSE,MAE
-Decision Tree,Train,1,0,0
-Decision Tree,Test,-10.41157895,18.0341343,12.65
-Random Forest,Train,0.773978835,6.148520147,3.755
-Random Forest,Test,-7.977182456,15.99530244,13.345
